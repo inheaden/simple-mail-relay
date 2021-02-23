@@ -1,4 +1,4 @@
-FROM golang:1.12.0-alpine3.9
+FROM alpine:3.12.1
 
 ENV USER=appuser
 ENV UID=2001
@@ -17,14 +17,18 @@ RUN adduser \
   --uid "${UID}" \
   "${USER}"
 
-ADD . /home/${USER}
-
 WORKDIR /home/${USER}
 
-RUN go build -o main .
-CMD [""]
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Copy our static executable.
+COPY ./service service
+
+# empty .env file
+RUN touch .env
+RUN chown -R $UID:$GID  /home/${USER} & chown -R $UID:$GID  /tmp
+
 USER ${USER}
 
-ENTRYPOINT [""]
-
-
+ENTRYPOINT ["/home/appuser/service"]

@@ -1,53 +1,34 @@
 package mail
 
 import (
-	"bytes"
-	"fmt"
-	"net/smtp"
-	"text/template"
+	"crypto/tls"
+	"log"
+	"strconv"
+
+	gomail "gopkg.in/mail.v2"
+	"inheaden.io/services/simple-mail-api/pkg/config"
 )
 
-func Sendmails(receiverEmailAddress string, emailSubject string, emailBody string) {
+// Sendmail sends a single mail
+func Sendmail(to string, emailSubject string, emailBody string) error {
+	m := gomail.NewMessage()
 
+	mailConfig := config.GetMailConfig()
 
-	// Sender data  Inheaden mail and pwd
-	from := ""
-	password := ""
+	m.SetHeader("From", mailConfig.SmtpFrom)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", emailSubject)
+	m.SetBody("text/plain", emailBody)
 
-	// Receiver email address.
-	// email will be sent to both client and Inheaden with data submited by client
-	to := []string{
-		"",
+	port, _ := strconv.Atoi(mailConfig.SmtpPort)
+	d := gomail.NewDialer(mailConfig.SmtpURL, port, mailConfig.Username, mailConfig.Password)
+
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: false, ServerName: mailConfig.SmtpURL}
+
+	if err := d.DialAndSend(m); err != nil {
+		return err
 	}
+	log.Print("Email send")
 
-
-
-
-	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
-
-	// Authentication.
-	auth := smtp.PlainAuth("", from, password, smtpHost)
-
-	t, _ := template.ParseFiles("simple-mail-api/pkg/mail/mailtemplate.html")
-
-	var body bytes.Buffer
-
-	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	body.Write([]byte(fmt.Sprintf("Subject: "+ emailSubject +"\n%s\n\n", mimeHeaders)))
-
-	t.Execute(&body, struct {
-		Body    string
-	}{
-		Body:    emailBody,
-	})
-
-	// Sending email.
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Email Sent!")
+	return nil
 }

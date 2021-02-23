@@ -1,0 +1,21 @@
+variables:
+  DOCKER_REGISTRY: "rg.nl-ams.scw.cloud/inheaden-registry"
+  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_TLS_CERTDIR: ""
+  GITLAB_URL: https://gitlab.inheaden.io
+  SERVICE_NAME: simple-mail-api
+
+stages:
+  - docker-deploy-go
+
+docker-deploy-go:
+  image: inheadendev/go-docker
+  stage: docker-deploy
+  services:
+    - docker:stable-dind
+  script:
+    - make build-static
+    - echo ${CI_REGISTRY_PASSWORD} | docker login -u ${CI_REGISTRY_USER} --password-stdin ${DOCKER_REGISTRY}
+    - docker build -f cmd/docker-file/Dockerfile -t ${DOCKER_REGISTRY}/${SERVICE_NAME}:main .
+    - docker push ${DOCKER_REGISTRY}/${SERVICE_NAME}:master
+    - docker image rm ${DOCKER_REGISTRY}/${SERVICE_NAME}:master

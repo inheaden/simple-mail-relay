@@ -1,23 +1,70 @@
 package request
 
 import (
-	"github.com/gorilla/mux"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
-	"simple-mail-api/pkg/mail"
+
+	"github.com/gorilla/mux"
+	"inheaden.io/services/simple-mail-api/pkg/config"
+	"inheaden.io/services/simple-mail-api/pkg/mail"
 )
 
-func send(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	receiverEmail := vars["receiverEmailAddress"]
-	emailSubject := vars["emailSubject"]
-	emailBody := vars["emailBody"]
-
-	mail.Sendmails(receiverEmail, emailSubject, emailBody)
-	mail.SendmailNotification(receiverEmail, emailSubject, emailBody)
+type MailRequest struct {
+	To      string
+	Subject string
+	Body    string
 }
+
+func send(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Content-Type") != "application/json" {
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		return
+	}
+
+	var request MailRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	allowList := config.GetConfig().AllowList
+	if !contains(allowList, request.To) {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	err = mail.Sendmail(request.To, request.Subject, request.Body)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// HandleRequests starts the web server
 func HandleRequests() {
-	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.HandleFunc("/sendmail/{receiverEmailAddress}/{emailSubject}/{emailBody}", send).Methods("POST")
-	log.Fatal(http.ListenAndServe(":8082", myRouter))
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/sendmail", send).Methods("POST")
+	router.HandleFunc("/health", health).Methods("GET")
+
+	log.Printf("Listening on port %s", config.GetConfig().Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", config.GetConfig().Port), router))
+}
+
+func contains(list []string, value string) bool {
+	for _, v := range list {
+		if v == value {
+			return true
+		}
+	}
+	return false
 }
