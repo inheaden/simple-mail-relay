@@ -17,5 +17,5 @@ docker-deploy-go:
     - make build-static
     - echo ${CI_REGISTRY_PASSWORD} | docker login -u ${CI_REGISTRY_USER} --password-stdin ${DOCKER_REGISTRY}
     - docker build -f cmd/docker-file/Dockerfile -t ${DOCKER_REGISTRY}/${SERVICE_NAME}:main .
-    - docker push ${DOCKER_REGISTRY}/${SERVICE_NAME}:master
-    - docker image rm ${DOCKER_REGISTRY}/${SERVICE_NAME}:master
+    - docker push ${DOCKER_REGISTRY}/${SERVICE_NAME}:main
+    - docker image rm ${DOCKER_REGISTRY}/${SERVICE_NAME}:main
