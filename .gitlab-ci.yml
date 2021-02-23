@@ -6,7 +6,7 @@ variables:
   SERVICE_NAME: simple-mail-api
 
 stages:
-  - docker-deploy-go
+  - docker-deploy
 
 docker-deploy-go:
   image: inheadendev/go-docker
