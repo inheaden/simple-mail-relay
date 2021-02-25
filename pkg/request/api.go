@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os/exec"
 
 	"github.com/gorilla/mux"
 	"inheaden.io/services/simple-mail-api/pkg/config"
@@ -47,7 +48,13 @@ func send(w http.ResponseWriter, r *http.Request) {
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNoContent)
+	cmd := exec.Command("nc", "-v", "78.46.5.205", "465")
+	stdout, err := cmd.CombinedOutput()
+
+	log.Printf(string(stdout))
+	log.Print(err)
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // HandleRequests starts the web server
