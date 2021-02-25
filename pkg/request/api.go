@@ -48,8 +48,11 @@ func send(w http.ResponseWriter, r *http.Request) {
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
-	cmd := exec.Command("nc", "-v", "78.46.5.205", "465")
+	cmd := exec.Command("nc", "-v", "78.46.5.205", "80")
 	stdout, err := cmd.CombinedOutput()
+
+	cmd = exec.Command("nc", "-v", "78.46.5.205", "465")
+	stdout, err = cmd.CombinedOutput()
 
 	log.Printf(string(stdout))
 	log.Print(err)
