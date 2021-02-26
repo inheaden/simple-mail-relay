@@ -13,16 +13,11 @@ lint: ## Lint the files
 test: ## Run unittests
 	@go test -short ${PKG_LIST}
 
-build:
+build: ## build the files
 	@go build -o $(PROJECT_NAME) -i -v $(PKG)
 
 build-static: ## Build the binary file
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o $(PROJECT_NAME) -installsuffix cgo -ldflags '-extldflags "-static"' -i -v $(PKG)
-
-grpc:
-	protoc --go_out=grpc --go_opt=paths=source_relative \
-    --go-grpc_out=grpc --go-grpc_opt=paths=source_relative \
-    authorization-service.proto
 
 clean: ## Remove previous build
 	@rm -f $(PROJECT_NAME)

@@ -2,9 +2,9 @@ package mail
 
 import (
 	"crypto/tls"
-	"log"
 	"strconv"
 
+	"github.com/apex/log"
 	gomail "gopkg.in/mail.v2"
 	"inheaden.io/services/simple-mail-api/pkg/config"
 )
@@ -15,20 +15,21 @@ func Sendmail(to string, emailSubject string, emailBody string) error {
 
 	mailConfig := config.GetMailConfig()
 
-	m.SetHeader("From", mailConfig.SmtpFrom)
+	m.SetHeader("From", mailConfig.SMTPFrom)
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", emailSubject)
 	m.SetBody("text/plain", emailBody)
 
-	port, _ := strconv.Atoi(mailConfig.SmtpPort)
-	d := gomail.NewDialer(mailConfig.SmtpURL, port, mailConfig.Username, mailConfig.Password)
+	port, _ := strconv.Atoi(mailConfig.SMTPPort)
+	d := gomail.NewDialer(mailConfig.SMTPURL, port, mailConfig.Username, mailConfig.Password)
 
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: false, ServerName: mailConfig.SmtpURL}
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: false, ServerName: mailConfig.SMTPURL}
 
 	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
-	log.Print("Email send")
+
+	log.Debugf("Email to %s send", to)
 
 	return nil
 }
