@@ -38,22 +38,34 @@ A pure secret based authentication does not work since api requests are public w
 
 The secret needs to be difficult to access, you might want to use environment variables when building and minify your code.
 
+## Deployment
+
+The server is available as a [docker image](https://hub.docker.com/r/inheadendev/simple-mail-relay).
+
+Otherwise simply run
+
+```
+cp .env.example .env
+make
+./service
+```
+
 ## Configuration
 
 ```
 # Port the server will listen on
 PORT=8000
 
-# A list of emails (comma separated)
+# A list of emails (comma separated) - required
 ALLOW_LIST=test@example.com,test2@example.com
 
-# URL of your SMTP server
-SMTP_URL=example.com
+# URL of your SMTP server - required
+SMTP_URL=smtp.example.com
 # Port your SMTP server listens to
 SMTP_PORT=465
 # The email address to use in the "From" field
 SMTP_FROM=your@email.com
-# Authentication for SMTP server
+# Authentication for SMTP server - required
 SMTP_USERNAME=your@email.com
 SMTP_PASSWORD=XXX
 
@@ -67,12 +79,12 @@ IP_HEADER=
 REQUIRE_NONCE=true
 
 # How often one ip may send mail requests
-RATE_LIMIT_SECONDS=2
+RATE_LIMIT_SECONDS=60
 
 # How long we keep ips and nonces around
 MAX_AGE_SECONDS=60
 
-# The secret to use for
+# The secret to use for authentication - required
 SECRET=secret
 ```
 
