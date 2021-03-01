@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -43,10 +44,12 @@ func GetMailConfig() MailConfig {
 func GetConfig() Config {
 	rateLimitSeconds, err := strconv.Atoi(getOr("RATE_LIMIT_SECONDS", "60"))
 	if err != nil {
+		log.Fatal("Could not read RATE_LIMIT_SECONDS")
 		panic(err)
 	}
 	maxAgeSeconds, err := strconv.Atoi(getOr("MAX_AGE_SECONDS", "60"))
 	if err != nil {
+		log.Fatal("Could not read MAX_AGE_SECONDS")
 		panic(err)
 	}
 

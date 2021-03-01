@@ -27,7 +27,8 @@ COPY ./service service
 
 # empty .env file
 RUN touch .env
-RUN chown -R $UID:$GID  /home/${USER} & chown -R $UID:$GID  /tmp
+RUN chown -R $UID:$GID /home/${USER} & chown -R $UID:$GID  /tmp
+RUN chmod +x ./service
 
 USER ${USER}
 
