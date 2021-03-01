@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"math/rand"
 	"time"
 )
@@ -19,4 +21,11 @@ func GetRandomString(length int) string {
 	}
 
 	return string(result)
+}
+
+// ValidateNonce validates if the payload (nonce + secret) matches the provided hash
+func ValidateNonce(nonce string, hash string, secret string) bool {
+	payload := nonce + secret
+	generatedHash := sha256.Sum256([]byte(payload))
+	return hex.EncodeToString(generatedHash[:]) == hash
 }
