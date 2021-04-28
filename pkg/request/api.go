@@ -10,6 +10,7 @@ import (
 	"github.com/apex/log"
 	"github.com/go-co-op/gocron"
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"inheaden.io/services/simple-mail-api/pkg/config"
 	"inheaden.io/services/simple-mail-api/pkg/db"
@@ -115,7 +116,8 @@ func HandleRequests() {
 	router.HandleFunc("/send", sendMail).Methods("POST")
 	router.HandleFunc("/nonce", getNonce).Methods("GET")
 	router.HandleFunc("/health", health).Methods("GET")
-	router.Use(mux.CORSMethodMiddleware(router))
+
+	addCorsHandlers(router)
 
 	s := gocron.NewScheduler(time.UTC)
 	s.Every(60).Seconds().Do(func() {
@@ -140,4 +142,18 @@ func contains(list []string, value string) bool {
 		}
 	}
 	return false
+}
+
+// CORS
+var allowedHeaders = "Content-Type"
+var allowedOrigins = "*"
+
+func handleCors(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", allowedOrigins)
+	w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
+}
+
+func addCorsHandlers(router *mux.Router) {
+	router.HandleFunc("/send", handleCors).Methods("OPTIONS")
+	router.Use(mux.CORSMethodMiddleware(router), handlers.CORS(handlers.AllowedHeaders([]string{allowedHeaders})))
 }
