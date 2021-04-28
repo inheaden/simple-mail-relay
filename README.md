@@ -129,7 +129,9 @@ Returns a new random nonce.
 - `200`: Succes
 
 ```json
+{
   "nonce": "The nonce"
+}
 ```
 
 ### `GET /health`
