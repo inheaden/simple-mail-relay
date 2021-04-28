@@ -88,6 +88,58 @@ MAX_AGE_SECONDS=60
 SECRET=secret
 ```
 
+## API
+
+### `POST /send`
+
+Main method, will send an email to the specified address.
+
+#### Request
+
+```json
+// headers
+{
+  "Content-Type": "application/json"
+}
+
+// body
+{
+  "to": "email-to-send-mail-to@example.com",
+  "subject": "Your subject",
+  "body": "Your message",
+  "nonce": "Nonce (optional)",
+  "hash": "Hash (optional)"
+}
+```
+
+#### Response
+
+- `204`: Success, message was sent
+- `400`: Bad Request, body is not valid
+- `403`: Forbidden, address is not allowed or hash is not correct
+- `429`: Too many requests (IP was rate limited)
+- `500`: Internal error
+
+### `GET /nonce`
+
+Returns a new random nonce.
+
+#### Response
+
+- `200`: Succes
+
+```json
+  "nonce": "The nonce"
+```
+
+### `GET /health`
+
+Health check.
+
+#### Response
+
+- `204`: Success, service is running
+
 ## Development
 
 The server is written in Go 1.16.

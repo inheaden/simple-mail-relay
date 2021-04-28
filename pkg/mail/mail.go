@@ -25,11 +25,11 @@ func Sendmail(to string, emailSubject string, emailBody string) error {
 
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: false, ServerName: mailConfig.SMTPURL}
 
-	// if err := d.DialAndSend(m); err != nil {
-	// 	return err
-	// }
+	if err := d.DialAndSend(m); err != nil {
+		return err
+	}
 
-	log.Debugf("Email to %s send", to)
+	log.Debugf("Email to %s was sent", to)
 
 	return nil
 }
