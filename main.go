@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/apex/log"
+	"github.com/inheaden/simple-mail-api/pkg/config"
+	"github.com/inheaden/simple-mail-api/pkg/request"
 	"github.com/joho/godotenv"
-	"inheaden.io/services/simple-mail-api/pkg/config"
-	"inheaden.io/services/simple-mail-api/pkg/request"
 )
 
 func init() {

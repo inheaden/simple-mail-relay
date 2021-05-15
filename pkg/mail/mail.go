@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/apex/log"
+	"github.com/inheaden/simple-mail-api/pkg/config"
 	gomail "gopkg.in/mail.v2"
-	"inheaden.io/services/simple-mail-api/pkg/config"
 )
 
 // Sendmail sends a single mail

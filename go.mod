@@ -1,4 +1,4 @@
-module inheaden.io/services/simple-mail-api
+module github.com/inheaden/simple-mail-api
 
 go 1.16
 

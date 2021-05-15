@@ -12,9 +12,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"inheaden.io/services/simple-mail-api/pkg/config"
-	"inheaden.io/services/simple-mail-api/pkg/db"
-	"inheaden.io/services/simple-mail-api/pkg/mail"
+	"github.com/inheaden/simple-mail-api/pkg/config"
+	"github.com/inheaden/simple-mail-api/pkg/db"
+	"github.com/inheaden/simple-mail-api/pkg/mail"
 )
 
 var database = db.NewDB()

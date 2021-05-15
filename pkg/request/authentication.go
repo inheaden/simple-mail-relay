@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/apex/log"
-	"inheaden.io/services/simple-mail-api/pkg/utils"
+	"github.com/inheaden/simple-mail-api/pkg/utils"
 )
 
 // RatelimitIP limites the requests from an ip to RATE_LIMIT_SECONDS
