@@ -7,6 +7,7 @@ type MailRequest struct {
 	Body    string `json:"body" validate:"required"`
 	Nonce   string `json:"nonce"`
 	Hash    string `json:"hash"`
+	From    string `json:"from"`
 }
 
 // ErrorResponse defines the response body if an error occures
