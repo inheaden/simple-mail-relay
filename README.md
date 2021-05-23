@@ -8,6 +8,7 @@ This is a simple SMTP relay server written in Go which can be deployed in a publ
 - Allows rate limiting on a IP basis
 - Has a built-in allow list which contact e-mails may be used
 - Offers a way to use a secret based authentication
+- Set optional 'Reply-To' header of contact forms
 
 ## Spam protection
 
@@ -108,7 +109,8 @@ Main method, will send an email to the specified address.
   "subject": "Your subject",
   "body": "Your message",
   "nonce": "Nonce (optional)",
-  "hash": "Hash (optional)"
+  "hash": "Hash (optional)",
+  "from": "email-to-reply-to@example.com (optional)"
 }
 ```
 

@@ -10,12 +10,15 @@ import (
 )
 
 // Sendmail sends a single mail
-func Sendmail(to string, emailSubject string, emailBody string) error {
-	m := gomail.NewMessage()
-
+func Sendmail(to string, emailSubject string, emailBody string, from string) error {
 	mailConfig := config.GetMailConfig()
 
+	m := gomail.NewMessage()
+
 	m.SetHeader("From", mailConfig.SMTPFrom)
+	if from != "" {
+		m.SetHeader("Reply-To", from)
+	}
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", emailSubject)
 	m.SetBody("text/plain", emailBody)
