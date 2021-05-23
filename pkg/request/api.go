@@ -77,12 +77,8 @@ func sendMail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send mail
+	err = mail.Sendmail(request.To, request.Subject, request.Body, request.From)
 
-	if request.From == "" {
-		err = mail.SendMailWithoutFrom(request.To, request.Subject, request.Body)
-	} else {
-		err = mail.SendMailWithFrom(request.To, request.Subject, request.Body, request.From)
-	}
 	if err != nil {
 		writeError(w, err)
 		return
